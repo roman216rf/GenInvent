@@ -2,6 +2,8 @@
 #define GENINVENT_H
 
 #include <QMainWindow>
+#include <group.h>
+#include <host.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class GenInvent; }

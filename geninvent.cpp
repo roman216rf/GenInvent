@@ -6,6 +6,7 @@ GenInvent::GenInvent(QWidget *parent)
     , ui(new Ui::GenInvent)
 {
     ui->setupUi(this);
+
 }
 
 GenInvent::~GenInvent()

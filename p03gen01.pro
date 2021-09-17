@@ -9,11 +9,17 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    group.cpp \
+    host.cpp \
+    inventfile.cpp \
     main.cpp \
     geninvent.cpp
 
 HEADERS += \
-    geninvent.h
+    geninvent.h \
+    group.h \
+    host.h \
+    inventfile.h
 
 FORMS += \
     geninvent.ui
