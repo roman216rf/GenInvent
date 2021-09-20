@@ -124,4 +124,7 @@
  </widget>
  <resources/>
  <connections/>
+ <slots>
+  <slot>importFromZabbix()</slot>
+ </slots>
 </ui>

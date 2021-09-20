@@ -2,11 +2,9 @@
 
 
 
-Host::Host(const QString &hostname, const QString &ip_host, const QString &login_host, const QString &pass_host){
+Host::Host(const QString &hostname, const QString &ip_host){
     name = hostname;
     ip = ip_host;
-    login = login_host;
-    pass = pass_host;
 }
 
 QString Host::getIp() const{

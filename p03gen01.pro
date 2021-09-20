@@ -11,7 +11,8 @@ CONFIG += c++11
 SOURCES += \
     group.cpp \
     host.cpp \
-    inventfile.cpp \
+    importZabbixFile.cpp \
+    inventObject.cpp \
     main.cpp \
     geninvent.cpp
 
@@ -19,7 +20,7 @@ HEADERS += \
     geninvent.h \
     group.h \
     host.h \
-    inventfile.h
+    inventObject.h
 
 FORMS += \
     geninvent.ui

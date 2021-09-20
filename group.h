@@ -1,16 +1,17 @@
 #ifndef GROUP_H
 #define GROUP_H
 
-#include "inventfile.h"
+#include "inventObject.h"
 #include "host.h"
 
 //Класс предоставляющий функции для работы с группами хостов
-class Group : public InventFile{
+class Host;
+class Group : InventObject{
 
 public:
     Group(const QString &new_name);
 
-    void setHostToGroup(const Host &host); //Функция, для добавления хоста в группу
+    void setHostToGroup(Host &host); //Функция, для добавления хоста в группу
 
     QVector<Host> getHostFromGroup()const; //Функция, для возвращения списка хостов в группе
 private:

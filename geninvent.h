@@ -17,6 +17,9 @@ public:
     GenInvent(QWidget *parent = nullptr);
     ~GenInvent();
 
+private slots:
+    void importFromZabbix();
+
 private:
     Ui::GenInvent *ui;
 };

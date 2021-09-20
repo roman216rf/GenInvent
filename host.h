@@ -1,13 +1,13 @@
 #ifndef HOST_H
 #define HOST_H
 
-#include "inventfile.h"
+#include "inventObject.h"
 #include "group.h"
-
-class Host : public InventFile{
+class Group;
+class Host : InventObject{
 
 public:
-    Host(const QString &hostname, const QString &ip_host, const QString &login_host, const QString &pass_host);
+    Host(const QString &hostname, const QString &ip_host);
 
     //Функции, изменяющие и возвращающие ip адрес хоста, логин и пароль
     QString getIp() const;
