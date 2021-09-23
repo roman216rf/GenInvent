@@ -1,12 +1,12 @@
 #ifndef IMPORTZABBIXFILE_H
 #define IMPORTZABBIXFILE_H
-#include <group.h>
-#include <host.h>
+#include <inventfile.h>
 #include <QFile>
 
 //Функция, возвращающая список групп с включенными в них хостами, на основе файла, путь которого передается в качестве аргумента
-QVector<Group> importZabbixFile(const QString &file_path){
-    QVector<Group> resultFile; //Объявление списка групп с включенными в них хостами
+InventFile importZabbixFile(const QString &file_path){
+    //QVector<Group> resultFile; //Объявление списка групп с включенными в них хостами
+    InventFile invFile;
 
     QFile file(file_path); //
     //bool typeData = false;
@@ -22,7 +22,8 @@ QVector<Group> importZabbixFile(const QString &file_path){
                         line.remove(0, 12);
                         line.chop(1);
                         Group tmp(line);
-                        resultFile.append(tmp);
+                        //resultFile.append(tmp);
+                        invFile.addOneGroup(tmp);
                     }
 
                     line = file.readLine();
@@ -30,14 +31,16 @@ QVector<Group> importZabbixFile(const QString &file_path){
             }
             else if (line.startsWith("  hosts:")){
                 while (!file.atEnd()){
+                    QString hostname;
+                    QVector<QString> groupList;
+                    QString ip;
                     if (line.startsWith("      name:")){
                         line.remove(0, 12);
                         line.chop(1);
-                        QString hostname = line;
-                        QVector<QString> groupList;
+                        hostname = line;
 
                         //line = file.readLine();
-                        while (!line.startsWith("      name:")){
+                        while (!line.startsWith("      name:") && line!=""){
                             if (line.startsWith("      groups:")){
                                 while(!line.startsWith("      interfaces:")){
                                     if (line.startsWith("          name:")){
@@ -50,9 +53,23 @@ QVector<Group> importZabbixFile(const QString &file_path){
                                 }
                             }
                             else if (line.startsWith("      interfaces:")){
+                                while(!line.startsWith("      inventory_mode:")){
+                                    if (line.startsWith("          ip:")){
+                                        line.remove(0, 14);
+                                        line.chop(1);
 
+                                        ip = line;
+                                    }
+                                    line = file.readLine();
+                                }
+                            }
+                            else{
+                                line = file.readLine();
                             }
                         }
+                        Host tmp_host(hostname, ip);
+
+                        invFile.addOneHost(tmp_host, groupList);
                     }
                     else{
                         line = file.readLine();
@@ -65,7 +82,7 @@ QVector<Group> importZabbixFile(const QString &file_path){
         }
         file.close();
     }
-    return resultFile;
+    return invFile;
 }
 
 #endif //IMPORTZABBIXFILE_H

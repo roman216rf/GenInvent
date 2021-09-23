@@ -12,7 +12,7 @@ SOURCES += \
     group.cpp \
     host.cpp \
     importZabbixFile.cpp \
-    inventObject.cpp \
+    inventfile.cpp \
     main.cpp \
     geninvent.cpp
 
@@ -20,7 +20,7 @@ HEADERS += \
     geninvent.h \
     group.h \
     host.h \
-    inventObject.h
+    inventfile.h
 
 FORMS += \
     geninvent.ui

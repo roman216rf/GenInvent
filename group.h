@@ -1,23 +1,24 @@
 #ifndef GROUP_H
 #define GROUP_H
-
-#include "inventObject.h"
-#include "host.h"
-
+#include <QMap>
+#include <host.h>
 //Класс предоставляющий функции для работы с группами хостов
-class Host;
-class Group : InventObject{
+class Group{
 
 public:
     Group(const QString &new_name);
 
-    void setHostToGroup(Host &host); //Функция, для добавления хоста в группу
+    QString getName() const;
+    void setName(const QString &value);
 
-    QVector<Host> getHostFromGroup()const; //Функция, для возвращения списка хостов в группе
+    QMap<QString, QString> getVars() const;
+    void setVars(const QMap<QString, QString> &value);
+    void setOneVar(const QString &var_name, const QString &value);
+    bool operator==(const Group &group1)const;
+    bool operator<(const Group& group)const;
 private:
-    QString name;
-    QMap<QString, QString> vars;
-    QVector<Host> hostList; //Переменная, хранящая список хостов в этой группе
+    QString name; //Переменая, хранящая имя объекта
+    QMap<QString, QString> vars; //Переменная, хранящая список переменных объекта
 };
 
 #endif // GROUP_H

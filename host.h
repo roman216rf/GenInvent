@@ -1,15 +1,14 @@
 #ifndef HOST_H
 #define HOST_H
+#include <QString>
+#include <QMap>
 
-#include "inventObject.h"
-#include "group.h"
-class Group;
-class Host : InventObject{
+class Host{
 
 public:
     Host(const QString &hostname, const QString &ip_host);
 
-    //Функции, изменяющие и возвращающие ip адрес хоста, логин и пароль
+    //Функции, изменяющие и возвращающие ия хоста, ip адрес хоста, логин, переменные и пароль
     QString getIp() const;
     void setIp(const QString &value);
 
@@ -19,16 +18,21 @@ public:
     QString getPass() const;
     void setPass(const QString &value);
 
-    void addGroupToHost(const Group &group); //Функция, добавляющая объект группы в список групп хоста
-    QVector<Group> getGroupList()const; //Функция, возвращающая список групп хоста
+    QString getName() const;
+    void setName(const QString &value);
+
+    QMap<QString, QString> getVars() const;
+    void setVars(const QMap<QString, QString> &value);
+    void setOneVar(const QString &var_name, const QString &value);
+
+    bool operator==(const Host &host)const;
 
 private:
-    QString name;
+    QString name; //Переменая, хранящая имя объекта
+    QMap<QString, QString> vars; //Переменная, хранящая список переменных объекта
     QString ip;
     QString login;
     QString pass;
-    QMap<QString, QString> vars;
-    QVector<Group> groupList;
 };
 
 #endif // HOST_H
