@@ -6,6 +6,7 @@
 class Host{
 
 public:
+    Host();
     Host(const QString &hostname, const QString &ip_host);
 
     //Функции, изменяющие и возвращающие ия хоста, ip адрес хоста, логин, переменные и пароль

@@ -13,6 +13,7 @@ public:
     void addOneHost(Host& host, Group& group);
     void addOneHost(Host& host, QVector<QString>& names_groups);
 
+    QMap <Group, QVector<Host>> getStructFile()const;
 private:
     QMap<Group, QVector<Host>> structFile;
 };

@@ -41,3 +41,7 @@ void InventFile::addOneHost(Host &host, QVector<QString> &names_groups){
         }
     }
 }
+
+QMap<Group, QVector<Host> > InventFile::getStructFile() const{
+    return structFile;
+}

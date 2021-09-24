@@ -2,6 +2,11 @@
 
 
 
+Host::Host(){
+    name = "NO_NAME";
+    ip = "0.0.0.0";
+}
+
 Host::Host(const QString &hostname, const QString &ip_host){
     name = hostname;
     ip = ip_host;
