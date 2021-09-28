@@ -4,6 +4,10 @@ InventFile::InventFile(){
 
 }
 
+InventFile::InventFile(QMap<Group, QVector<Host> > new_structFile){
+    structFile = new_structFile;
+}
+
 void InventFile::addOneGroup(Group &group){
     if (!structFile.contains(group)){
         QVector<Host> tmp;
@@ -42,6 +46,6 @@ void InventFile::addOneHost(Host &host, QVector<QString> &names_groups){
     }
 }
 
-QMap<Group, QVector<Host> > InventFile::getStructFile() const{
+QMap<Group, QVector<Host> >& InventFile::getStructFile(){
     return structFile;
 }

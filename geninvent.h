@@ -24,7 +24,13 @@ private slots:
 
     void on_treeWidget_itemActivated(QTreeWidgetItem *item);
 
-    void on_listWidget_itemClicked(QListWidgetItem *item);
+    void on_treeWidget_itemClicked(QTreeWidgetItem *item);
+
+    void on_treeWidget_itemChanged(QTreeWidgetItem *item);
+
+    void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
+
+    void on_listWidget_itemSelectionChanged();
 
 private:
     Ui::GenInvent *ui;

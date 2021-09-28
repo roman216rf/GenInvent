@@ -7,13 +7,14 @@
 class InventFile{
 public:
     InventFile();
+    InventFile(QMap<Group, QVector<Host>> structFile);
     void addOneGroup(Group& group);
     void addListGroups(QVector<Group>& list_groups);
 
     void addOneHost(Host& host, Group& group);
     void addOneHost(Host& host, QVector<QString>& names_groups);
 
-    QMap <Group, QVector<Host>> getStructFile()const;
+    QMap <Group, QVector<Host>>& getStructFile();
 private:
     QMap<Group, QVector<Host>> structFile;
 };
