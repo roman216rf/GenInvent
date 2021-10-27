@@ -1,26 +1,48 @@
 #include "geninvent.h"
-#include <importZabbixFile.cpp>
 
-InventFile inventfile;
+InventFile inventfile, old_inventfile;
 QString old_value;
 
 GenInvent::GenInvent(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::GenInvent)
-{
+    , ui(new Ui::GenInvent){
     ui->setupUi(this);
     connect(ui->action_Zabbix, SIGNAL(triggered()), this, SLOT(importFromZabbix()));
+    connect(ui->action_Ansible, SIGNAL(triggered()), this, SLOT(importFromAnsible()));
 }
 
-GenInvent::~GenInvent()
-{
+GenInvent::~GenInvent(){
     delete ui;
 }
 
 void GenInvent::importFromZabbix(){
+    old_inventfile = inventfile;
     QFileDialog fd;
-    inventfile = importZabbixFile(fd.getOpenFileName(0,"Выберите файл, экспортированный из Zabbix", "", "*.yaml"));
+    inventfile = ImportFile::importZabbixFile(fd.getOpenFileName(0,"Выберите файл, экспортированный из Zabbix", "", "*.yaml"));
     fd.close();
+    inventfile.append(old_inventfile);
+    ui->treeWidget->clear();
+    QMapIterator <Group, QVector<Host>> group(inventfile.getStructFile());
+    while (group.hasNext()){
+        group.next();
+        QTreeWidgetItem *group_item = new QTreeWidgetItem(ui->treeWidget);
+        group_item->setText(0, group.key().getName());
+        ui->treeWidget->addTopLevelItem(group_item);
+        for (const Host& host : group.value()){
+            QTreeWidgetItem *host_item = new QTreeWidgetItem(group_item);
+            host_item->setText(0, host.getName());
+            group_item->addChild(host_item);
+        }
+    }
+}
+
+void GenInvent::importFromAnsible(){
+    old_inventfile = inventfile;
+    QFileDialog fd;
+    inventfile = ImportFile::importAnsibleFile(fd.getOpenFileName(0,"Выберите файл, экспортированный из Ansible", "", "*"));
+    fd.close();
+    inventfile.append(old_inventfile);
+    ui->treeWidget->clear();
     QMapIterator <Group, QVector<Host>> group(inventfile.getStructFile());
     while (group.hasNext()){
         group.next();
@@ -72,7 +94,7 @@ void GenInvent::on_treeWidget_itemClicked(QTreeWidgetItem *item){
                 ui->listWidget->addItem(pass);
                 pass->setFlags(pass->flags() | Qt::ItemIsEditable);
 
-                QMapIterator<QString, QString> vars(inventfile.getStructFile().value(item->parent()->text(0)).value(i).getVars());
+                /*QMapIterator<QString, QString> vars(inventfile.getStructFile().value(item->parent()->text(0)).value(i).getVars());
                 while(vars.hasNext()){
                     vars.next();
 
@@ -81,7 +103,7 @@ void GenInvent::on_treeWidget_itemClicked(QTreeWidgetItem *item){
                     var->setText(vars.value());
                     ui->listWidget->addItem(var);
                     var->setFlags(var->flags() | Qt::ItemIsEditable);
-                }
+                }*/
             }
             i++;
         }
@@ -167,7 +189,7 @@ void GenInvent::on_listWidget_itemSelectionChanged(){
                     for (int i = 9; i < ui->listWidget->count(); i=+2){
                         var.insert(ui->listWidget->item(i-1)->text(), ui->listWidget->item(i)->text());
                     }
-                    inventfile.getStructFile()[group.key()][i].setVars(var);
+                    //inventfile.getStructFile()[group.key()][i].setVars(var);
                 }
             }
         }

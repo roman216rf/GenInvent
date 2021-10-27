@@ -1,6 +1,6 @@
-QT       += core gui
+QT       += core gui network
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets network
 
 CONFIG += c++11
 
@@ -9,17 +9,20 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    exportfile.cpp \
     group.cpp \
     host.cpp \
-    importZabbixFile.cpp \
+    importfile.cpp \
     inventfile.cpp \
     main.cpp \
     geninvent.cpp
 
 HEADERS += \
+    exportfile.h \
     geninvent.h \
     group.h \
     host.h \
+    importfile.h \
     inventfile.h
 
 FORMS += \

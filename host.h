@@ -23,14 +23,14 @@ public:
     void setName(const QString &value);
 
     QMap<QString, QString> getVars() const;
-    void setVars(const QMap<QString, QString> &value);
-    void setOneVar(const QString &var_name, const QString &value);
+    //void setVars(const QMap<QString, QString> &value);
+    //void setOneVar(const QString &var_name, const QString &value);
 
     bool operator==(const Host &host)const;
 
 private:
     QString name; //Переменая, хранящая имя объекта
-    QMap<QString, QString> vars; //Переменная, хранящая список переменных объекта
+    //QMap<QString, QString> vars; //Переменная, хранящая список переменных объекта
     QString ip;
     QString login;
     QString pass;

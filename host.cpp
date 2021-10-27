@@ -44,7 +44,7 @@ void Host::setName(const QString &value){
     name = value;
 }
 
-QMap<QString, QString> Host::getVars() const{
+/*QMap<QString, QString> Host::getVars() const{
     return vars;
 }
 
@@ -54,7 +54,7 @@ void Host::setVars(const QMap<QString, QString> &value){
 
 void Host::setOneVar(const QString &var_name, const QString &value){
     vars[var_name] = value;
-}
+}*/
 
 bool Host::operator==(const Host &host) const{
     return ((this->getName() == host.getName()) || (this->getIp() == host.getIp()));

@@ -6,6 +6,7 @@
 #include "ui_geninvent.h"
 #include <QFileDialog>
 #include <QListWidget>
+#include <importfile.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class GenInvent; }
@@ -21,6 +22,8 @@ public:
 
 private slots:
     void importFromZabbix();
+
+    void importFromAnsible();
 
     void on_treeWidget_itemActivated(QTreeWidgetItem *item);
 
