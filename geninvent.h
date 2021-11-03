@@ -7,6 +7,8 @@
 #include <QFileDialog>
 #include <QListWidget>
 #include <importfile.h>
+#include <addgroup.h>
+#include <addhost.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class GenInvent; }
@@ -22,20 +24,21 @@ public:
 
 private slots:
     void importFromZabbix();
-
     void importFromAnsible();
+    void addGroup();
+    void addHost();
+    void delGroups();
+    void delHosts();
 
     void on_treeWidget_itemActivated(QTreeWidgetItem *item);
-
     void on_treeWidget_itemClicked(QTreeWidgetItem *item);
-
     void on_treeWidget_itemChanged(QTreeWidgetItem *item);
-
     void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
-
     void on_listWidget_itemSelectionChanged();
-
+    void on_treeWidget_customContextMenuRequested(const QPoint &pos);
+    
 private:
+    void drawStruct(InventFile& inventFile)const;
     Ui::GenInvent *ui;
 };
 #endif // GENINVENT_H

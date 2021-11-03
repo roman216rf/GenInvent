@@ -46,6 +46,9 @@
         <property name="contextMenuPolicy">
          <enum>Qt::CustomContextMenu</enum>
         </property>
+        <attribute name="headerVisible">
+         <bool>false</bool>
+        </attribute>
         <column>
          <property name="text">
           <string notr="true">1</string>
@@ -83,17 +86,19 @@
     <addaction name="action_Zabbix"/>
     <addaction name="action_Ansible"/>
     <addaction name="separator"/>
-    <addaction name="action_2"/>
+    <addaction name="action_Export"/>
    </widget>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="menuEdit">
     <property name="title">
      <string>Правка</string>
     </property>
-    <addaction name="action_3"/>
-    <addaction name="action_4"/>
+    <addaction name="action_add_group"/>
+    <addaction name="action_add_host"/>
+    <addaction name="action_del_groups"/>
+    <addaction name="action_del_hosts"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menu"/>
+   <addaction name="menuEdit"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="action_Zabbix">
@@ -106,19 +111,29 @@
     <string>Импорт из Ansible файла</string>
    </property>
   </action>
-  <action name="action_2">
+  <action name="action_Export">
    <property name="text">
     <string>Экпорт файла</string>
    </property>
   </action>
-  <action name="action_3">
+  <action name="action_add_group">
    <property name="text">
     <string>Добавить группу</string>
    </property>
   </action>
-  <action name="action_4">
+  <action name="action_add_host">
    <property name="text">
     <string>Добавить хост</string>
+   </property>
+  </action>
+  <action name="action_del_groups">
+   <property name="text">
+    <string>Удалить группы</string>
+   </property>
+  </action>
+  <action name="action_del_hosts">
+   <property name="text">
+    <string>Удалить хосты</string>
    </property>
   </action>
  </widget>

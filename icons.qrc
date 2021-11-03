@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/pushbutton_icon">
+        <file>resourses/icons/add_icon.ico</file>
+        <file>resourses/icons/del_icon.ico</file>
+    </qresource>
+</RCC>

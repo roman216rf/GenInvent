@@ -9,6 +9,10 @@ GenInvent::GenInvent(QWidget *parent)
     ui->setupUi(this);
     connect(ui->action_Zabbix, SIGNAL(triggered()), this, SLOT(importFromZabbix()));
     connect(ui->action_Ansible, SIGNAL(triggered()), this, SLOT(importFromAnsible()));
+    connect(ui->action_add_group, SIGNAL(triggered()), this, SLOT(addGroup()));
+    connect(ui->action_add_host, SIGNAL(triggered()), this, SLOT(addHost()));
+    connect(ui->action_del_groups, SIGNAL(triggered()), this, SLOT(delGroups()));
+    connect(ui->action_del_hosts, SIGNAL(triggered()), this, SLOT(delHosts()));
 }
 
 GenInvent::~GenInvent(){
@@ -21,19 +25,7 @@ void GenInvent::importFromZabbix(){
     inventfile = ImportFile::importZabbixFile(fd.getOpenFileName(0,"Выберите файл, экспортированный из Zabbix", "", "*.yaml"));
     fd.close();
     inventfile.append(old_inventfile);
-    ui->treeWidget->clear();
-    QMapIterator <Group, QVector<Host>> group(inventfile.getStructFile());
-    while (group.hasNext()){
-        group.next();
-        QTreeWidgetItem *group_item = new QTreeWidgetItem(ui->treeWidget);
-        group_item->setText(0, group.key().getName());
-        ui->treeWidget->addTopLevelItem(group_item);
-        for (const Host& host : group.value()){
-            QTreeWidgetItem *host_item = new QTreeWidgetItem(group_item);
-            host_item->setText(0, host.getName());
-            group_item->addChild(host_item);
-        }
-    }
+    drawStruct(inventfile);
 }
 
 void GenInvent::importFromAnsible(){
@@ -42,19 +34,42 @@ void GenInvent::importFromAnsible(){
     inventfile = ImportFile::importAnsibleFile(fd.getOpenFileName(0,"Выберите файл, экспортированный из Ansible", "", "*"));
     fd.close();
     inventfile.append(old_inventfile);
-    ui->treeWidget->clear();
+
+    drawStruct(inventfile);
+}
+
+void GenInvent::addGroup(){
+    QVector<QString>varList;
     QMapIterator <Group, QVector<Host>> group(inventfile.getStructFile());
-    while (group.hasNext()){
+    while(group.hasNext()){
         group.next();
-        QTreeWidgetItem *group_item = new QTreeWidgetItem(ui->treeWidget);
-        group_item->setText(0, group.key().getName());
-        ui->treeWidget->addTopLevelItem(group_item);
-        for (const Host& host : group.value()){
-            QTreeWidgetItem *host_item = new QTreeWidgetItem(group_item);
-            host_item->setText(0, host.getName());
-            group_item->addChild(host_item);
+
+        QMapIterator <QString, QString> vars(group.key().getVars());
+        while (vars.hasNext()) {
+            vars.next();
+
+            if(!varList.contains(vars.key()))
+                varList.append(vars.key());
         }
     }
+
+    AddGroup w(this);
+    w.setPropList(varList, inventfile);
+    w.exec();
+    drawStruct(inventfile);
+}
+
+void GenInvent::addHost(){
+    AddHost w(this);
+    w.exec();
+}
+
+void GenInvent::delGroups(){
+
+}
+
+void GenInvent::delHosts(){
+
 }
 
 void GenInvent::on_treeWidget_itemActivated(QTreeWidgetItem *item){
@@ -209,6 +224,35 @@ void GenInvent::on_listWidget_itemSelectionChanged(){
                 inventfile.getStructFile().insert(gr, group.value());
                 inventfile.getStructFile().remove(group.key());
             }
+        }
+    }
+}
+
+void GenInvent::on_treeWidget_customContextMenuRequested(const QPoint &pos){
+    QMenu menu(this);
+    menu.addAction(ui->action_add_group);
+    menu.addAction(ui->action_add_host);
+    menu.addAction(ui->action_del_groups);
+    menu.addAction(ui->action_del_hosts);
+    ui->action_add_group->setData(QVariant(pos));
+    ui->action_add_host->setData(QVariant(pos));
+    ui->action_del_groups->setData(QVariant(pos));
+    ui->action_del_hosts->setData(QVariant(pos));
+    menu.exec(ui->treeWidget->mapToGlobal(pos));
+}
+
+void GenInvent::drawStruct(InventFile &inventFile) const{
+    ui->treeWidget->clear();
+    QMapIterator <Group, QVector<Host>> group(inventFile.getStructFile());
+    while (group.hasNext()){
+        group.next();
+        QTreeWidgetItem *group_item = new QTreeWidgetItem(ui->treeWidget);
+        group_item->setText(0, group.key().getName());
+        ui->treeWidget->addTopLevelItem(group_item);
+        for (const Host& host : group.value()){
+            QTreeWidgetItem *host_item = new QTreeWidgetItem(group_item);
+            host_item->setText(0, host.getName());
+            group_item->addChild(host_item);
         }
     }
 }
