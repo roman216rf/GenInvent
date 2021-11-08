@@ -95,8 +95,20 @@ void AddGroup::delUsingVarFromCmb(const QString& varname){
     }
 }
 
-void AddGroup::setPropList(const QVector<QString> &newvarList, InventFile& invfile){
-    varList = newvarList;
+void AddGroup::setPropList(InventFile& invfile){
+    QVector<QString>varList;
+    QMapIterator <Group, QVector<Host>> group(invfile.getStructFile());
+    while(group.hasNext()){
+        group.next();
+
+        QMapIterator <QString, QString> vars(group.key().getVars());
+        while (vars.hasNext()) {
+            vars.next();
+
+            if(!varList.contains(vars.key()))
+                varList.append(vars.key());
+        }
+    }
     inventFile = &invfile;
 
 }

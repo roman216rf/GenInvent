@@ -39,29 +39,17 @@ void GenInvent::importFromAnsible(){
 }
 
 void GenInvent::addGroup(){
-    QVector<QString>varList;
-    QMapIterator <Group, QVector<Host>> group(inventfile.getStructFile());
-    while(group.hasNext()){
-        group.next();
-
-        QMapIterator <QString, QString> vars(group.key().getVars());
-        while (vars.hasNext()) {
-            vars.next();
-
-            if(!varList.contains(vars.key()))
-                varList.append(vars.key());
-        }
-    }
-
     AddGroup w(this);
-    w.setPropList(varList, inventfile);
+    w.setPropList(inventfile);
     w.exec();
     drawStruct(inventfile);
 }
 
 void GenInvent::addHost(){
     AddHost w(this);
+    w.setPropList(inventfile);
     w.exec();
+    drawStruct(inventfile);
 }
 
 void GenInvent::delGroups(){

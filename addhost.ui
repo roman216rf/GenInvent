@@ -38,7 +38,7 @@
     <enum>Qt::Horizontal</enum>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
    </property>
   </widget>
   <widget class="QLabel" name="label">
@@ -60,10 +60,10 @@
     <string>Имя хоста</string>
    </property>
    <property name="buddy">
-    <cstring>lineEdit</cstring>
+    <cstring>hostname</cstring>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit">
+  <widget class="QLineEdit" name="hostname">
    <property name="geometry">
     <rect>
      <x>105</x>
@@ -92,10 +92,10 @@
     <string>IP адрес хоста</string>
    </property>
    <property name="buddy">
-    <cstring>lineEdit_2</cstring>
+    <cstring>ip1</cstring>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_2">
+  <widget class="QLineEdit" name="ip1">
    <property name="geometry">
     <rect>
      <x>105</x>
@@ -103,6 +103,9 @@
      <width>46</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="inputMask">
+    <string>000</string>
    </property>
   </widget>
   <widget class="Line" name="line">
@@ -150,10 +153,10 @@
     <string>Имя пользователя хоста</string>
    </property>
    <property name="buddy">
-    <cstring>lineEdit_3</cstring>
+    <cstring>login</cstring>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_3">
+  <widget class="QLineEdit" name="login">
    <property name="geometry">
     <rect>
      <x>25</x>
@@ -196,17 +199,20 @@
     <string>Пароль пользователя хоста</string>
    </property>
    <property name="buddy">
-    <cstring>lineEdit_4</cstring>
+    <cstring>pass</cstring>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_4">
+  <widget class="QLineEdit" name="pass">
    <property name="geometry">
     <rect>
      <x>25</x>
      <y>240</y>
-     <width>331</width>
+     <width>296</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="echoMode">
+    <enum>QLineEdit::Password</enum>
    </property>
   </widget>
   <widget class="QListWidget" name="listWidget">
@@ -217,6 +223,9 @@
      <width>276</width>
      <height>371</height>
     </rect>
+   </property>
+   <property name="selectionMode">
+    <enum>QAbstractItemView::MultiSelection</enum>
    </property>
   </widget>
   <widget class="QLabel" name="label_6">
@@ -241,7 +250,7 @@
     <cstring>listWidget</cstring>
    </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_5">
+  <widget class="QLineEdit" name="ip2">
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -250,8 +259,11 @@
      <height>21</height>
     </rect>
    </property>
+   <property name="inputMask">
+    <string>000</string>
+   </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_6">
+  <widget class="QLineEdit" name="ip3">
    <property name="geometry">
     <rect>
      <x>215</x>
@@ -260,8 +272,11 @@
      <height>21</height>
     </rect>
    </property>
+   <property name="inputMask">
+    <string>000</string>
+   </property>
   </widget>
-  <widget class="QLineEdit" name="lineEdit_7">
+  <widget class="QLineEdit" name="ip4">
    <property name="geometry">
     <rect>
      <x>270</x>
@@ -269,6 +284,9 @@
      <width>46</width>
      <height>21</height>
     </rect>
+   </property>
+   <property name="inputMask">
+    <string>000</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_7">
@@ -290,7 +308,7 @@
     <string>.</string>
    </property>
    <property name="buddy">
-    <cstring>lineEdit_5</cstring>
+    <cstring>ip2</cstring>
    </property>
   </widget>
   <widget class="QLabel" name="label_8">
@@ -312,7 +330,7 @@
     <string>.</string>
    </property>
    <property name="buddy">
-    <cstring>lineEdit_6</cstring>
+    <cstring>ip3</cstring>
    </property>
   </widget>
   <widget class="QLabel" name="label_9">
@@ -334,35 +352,32 @@
     <string>.</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>325</x>
+     <y>240</y>
+     <width>31</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
  </widget>
  <tabstops>
-  <tabstop>lineEdit</tabstop>
-  <tabstop>lineEdit_2</tabstop>
-  <tabstop>lineEdit_5</tabstop>
-  <tabstop>lineEdit_6</tabstop>
-  <tabstop>lineEdit_7</tabstop>
-  <tabstop>lineEdit_3</tabstop>
-  <tabstop>lineEdit_4</tabstop>
+  <tabstop>hostname</tabstop>
+  <tabstop>ip1</tabstop>
+  <tabstop>ip2</tabstop>
+  <tabstop>ip3</tabstop>
+  <tabstop>ip4</tabstop>
+  <tabstop>login</tabstop>
+  <tabstop>pass</tabstop>
   <tabstop>listWidget</tabstop>
  </tabstops>
  <resources/>
  <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>AddHost</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>695</x>
-     <y>589</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>

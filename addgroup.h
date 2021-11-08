@@ -22,7 +22,7 @@ public:
     AddGroup(QWidget *parent = nullptr);
     ~AddGroup();
 
-    void setPropList(const QVector<QString> &newvarList, InventFile& invfile);
+    void setPropList(InventFile& invfile);
 
 private slots:
     void addVar();
