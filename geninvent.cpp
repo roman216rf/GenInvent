@@ -11,8 +11,7 @@ GenInvent::GenInvent(QWidget *parent)
     connect(ui->action_Ansible, SIGNAL(triggered()), this, SLOT(importFromAnsible()));
     connect(ui->action_add_group, SIGNAL(triggered()), this, SLOT(addGroup()));
     connect(ui->action_add_host, SIGNAL(triggered()), this, SLOT(addHost()));
-    connect(ui->action_del_groups, SIGNAL(triggered()), this, SLOT(delGroups()));
-    connect(ui->action_del_hosts, SIGNAL(triggered()), this, SLOT(delHosts()));
+    connect(ui->action_del, SIGNAL(triggered()), this, SLOT(del()));
 }
 
 GenInvent::~GenInvent(){
@@ -52,12 +51,33 @@ void GenInvent::addHost(){
     drawStruct(inventfile);
 }
 
-void GenInvent::delGroups(){
+void GenInvent::del(){
+    if (ui->treeWidget->selectedItems().at(0)->parent() == NULL){ //Group
+        QMessageBox msg;
+        msg.setWindowTitle("Удаление группы");
+        msg.setText("Вы действительно хотите удалить группу " + ui->treeWidget->selectedItems().at(0)->text(0) + " со всеми её хостами?");
+        msg.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+        msg.setButtonText(QMessageBox::Yes, "Удалить");
 
-}
+        int res = msg.exec();
+        if (res == QMessageBox::Yes){
+            inventfile.delGroup(ui->treeWidget->selectedItems().at(0)->text(0));
+            drawStruct(inventfile);
+        }
+    }
+    else{ //Host
+        QMessageBox msg;
+        msg.setWindowTitle("Удаление хоста");
+        msg.setText("Вы действительно хотите удалить хост " + ui->treeWidget->selectedItems().at(0)->text(0) + "?");
+        msg.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+        msg.setButtonText(QMessageBox::Yes, "Удалить");
 
-void GenInvent::delHosts(){
-
+        int res = msg.exec();
+        if (res == QMessageBox::Yes){
+            inventfile.delHost(ui->treeWidget->selectedItems().at(0)->text(0));
+            drawStruct(inventfile);
+        }
+    }
 }
 
 void GenInvent::on_treeWidget_itemActivated(QTreeWidgetItem *item){
@@ -219,17 +239,20 @@ void GenInvent::on_listWidget_itemSelectionChanged(){
 void GenInvent::on_treeWidget_customContextMenuRequested(const QPoint &pos){
     QMenu menu(this);
     menu.addAction(ui->action_add_group);
-    menu.addAction(ui->action_add_host);
-    menu.addAction(ui->action_del_groups);
-    menu.addAction(ui->action_del_hosts);
     ui->action_add_group->setData(QVariant(pos));
+
+    menu.addAction(ui->action_add_host);
     ui->action_add_host->setData(QVariant(pos));
-    ui->action_del_groups->setData(QVariant(pos));
-    ui->action_del_hosts->setData(QVariant(pos));
+
+    if (ui->treeWidget->selectedItems().count() > 0){
+        menu.addAction(ui->action_del);
+        ui->action_del->setData(QVariant(pos));
+    }
+
     menu.exec(ui->treeWidget->mapToGlobal(pos));
 }
 
-void GenInvent::drawStruct(InventFile &inventFile) const{
+void GenInvent::drawStruct(const InventFile &inventFile) const{
     ui->treeWidget->clear();
     QMapIterator <Group, QVector<Host>> group(inventFile.getStructFile());
     while (group.hasNext()){

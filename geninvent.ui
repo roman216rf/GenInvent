@@ -94,8 +94,7 @@
     </property>
     <addaction name="action_add_group"/>
     <addaction name="action_add_host"/>
-    <addaction name="action_del_groups"/>
-    <addaction name="action_del_hosts"/>
+    <addaction name="action_del"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -126,14 +125,12 @@
     <string>Добавить хост</string>
    </property>
   </action>
-  <action name="action_del_groups">
+  <action name="action_del">
    <property name="text">
-    <string>Удалить группы</string>
+    <string>Удалить</string>
    </property>
-  </action>
-  <action name="action_del_hosts">
-   <property name="text">
-    <string>Удалить хосты</string>
+   <property name="toolTip">
+    <string>Удалить</string>
    </property>
   </action>
  </widget>

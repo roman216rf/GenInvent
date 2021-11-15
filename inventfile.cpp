@@ -53,6 +53,20 @@ void InventFile::addMoreHosts(QVector<Host> &hosts, QString &group){
     }
 }
 
+void InventFile::delGroup(const QString &groupname){
+    structFile.remove(Group(groupname));
+}
+
+void InventFile::delHost(const QString &hostname){
+    QMapIterator<Group, QVector<Host>> i(structFile);
+    while(i.hasNext()){
+        i.next();
+        if (i.value().contains(Host(hostname, ""))){
+            structFile[i.key()].remove(structFile[i.key()].indexOf(Host(hostname, "")));
+        }
+    }
+}
+
 void InventFile::setVars(QString &groupname, QString &var_name, QString &var_value){
     QMapIterator<Group, QVector<Host>> i(structFile);
     while(i.hasNext()){
@@ -99,6 +113,6 @@ void InventFile::append(InventFile &invfile){
     }
 }
 
-QMap<Group, QVector<Host> >& InventFile::getStructFile(){
+QMap<Group, QVector<Host> > InventFile::getStructFile() const{
     return structFile;
 }

@@ -27,8 +27,7 @@ private slots:
     void importFromAnsible();
     void addGroup();
     void addHost();
-    void delGroups();
-    void delHosts();
+    void del();
 
     void on_treeWidget_itemActivated(QTreeWidgetItem *item);
     void on_treeWidget_itemClicked(QTreeWidgetItem *item);
@@ -38,7 +37,7 @@ private slots:
     void on_treeWidget_customContextMenuRequested(const QPoint &pos);
     
 private:
-    void drawStruct(InventFile& inventFile)const;
+    void drawStruct(const InventFile& inventFile)const;
     Ui::GenInvent *ui;
 };
 #endif // GENINVENT_H
