@@ -10,9 +10,9 @@ public:
     void addOneGroup(Group& group);
     void addListGroups(QVector<Group>& list_groups);
 
-    void addOneHost(Host& host, QString& group);
+    void addOneHost(Host& host, const QString& group);
     void addOneHost(Host& host, QVector<QString>& names_groups);
-    void addMoreHosts(QVector<Host>&hosts, QString& group);
+    void addMoreHosts(QVector<Host>&hosts, const QString& group);
 
     void delGroup(const QString& groupname);
     void delHost(const QString& hostname);

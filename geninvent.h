@@ -28,12 +28,13 @@ private slots:
     void addGroup();
     void addHost();
     void del();
+    void edit();
 
-    void on_treeWidget_itemActivated(QTreeWidgetItem *item);
+    //void on_treeWidget_itemActivated(QTreeWidgetItem *item);
     void on_treeWidget_itemClicked(QTreeWidgetItem *item);
-    void on_treeWidget_itemChanged(QTreeWidgetItem *item);
-    void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
-    void on_listWidget_itemSelectionChanged();
+    //void on_treeWidget_itemChanged(QTreeWidgetItem *item);
+    //void on_listWidget_itemDoubleClicked(QListWidgetItem *item);
+    //void on_listWidget_itemSelectionChanged();
     void on_treeWidget_customContextMenuRequested(const QPoint &pos);
     
 private:

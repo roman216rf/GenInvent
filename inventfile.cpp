@@ -24,7 +24,7 @@ void InventFile::addListGroups(QVector<Group> &list_groups){
     }
 }
 
-void InventFile::addOneHost(Host &host, QString &group){
+void InventFile::addOneHost(Host &host, const QString &group){
     if (structFile.contains(group)){
         if (!structFile.value(group).contains(host)){
             structFile[group].append(host);
@@ -47,7 +47,7 @@ void InventFile::addOneHost(Host &host, QVector<QString> &names_groups){
     }
 }
 
-void InventFile::addMoreHosts(QVector<Host> &hosts, QString &group){
+void InventFile::addMoreHosts(QVector<Host> &hosts, const QString &group){
     for(Host& host : hosts){
         this->addOneHost(host, group);
     }

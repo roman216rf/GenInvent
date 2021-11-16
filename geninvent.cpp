@@ -12,6 +12,7 @@ GenInvent::GenInvent(QWidget *parent)
     connect(ui->action_add_group, SIGNAL(triggered()), this, SLOT(addGroup()));
     connect(ui->action_add_host, SIGNAL(triggered()), this, SLOT(addHost()));
     connect(ui->action_del, SIGNAL(triggered()), this, SLOT(del()));
+    connect(ui->action_edit, SIGNAL(triggered()), this, SLOT(edit()));
 }
 
 GenInvent::~GenInvent(){
@@ -52,7 +53,7 @@ void GenInvent::addHost(){
 }
 
 void GenInvent::del(){
-    if (ui->treeWidget->selectedItems().at(0)->parent() == NULL){ //Group
+    if (ui->treeWidget->selectedItems().at(0)->parent() == NULL){
         QMessageBox msg;
         msg.setWindowTitle("Удаление группы");
         msg.setText("Вы действительно хотите удалить группу " + ui->treeWidget->selectedItems().at(0)->text(0) + " со всеми её хостами?");
@@ -65,7 +66,7 @@ void GenInvent::del(){
             drawStruct(inventfile);
         }
     }
-    else{ //Host
+    else{
         QMessageBox msg;
         msg.setWindowTitle("Удаление хоста");
         msg.setText("Вы действительно хотите удалить хост " + ui->treeWidget->selectedItems().at(0)->text(0) + "?");
@@ -80,10 +81,11 @@ void GenInvent::del(){
     }
 }
 
-void GenInvent::on_treeWidget_itemActivated(QTreeWidgetItem *item){
-    item->setFlags(item->flags() | Qt::ItemIsEditable);
-    old_value = item->text(0);
-    ui->treeWidget->editItem(item);
+void GenInvent::edit(){
+    AddGroup w(this);
+    w.setPropList(inventfile, ui->treeWidget->selectedItems().at(0)->text(0));
+    w.exec();
+    drawStruct(inventfile);
 }
 
 void GenInvent::on_treeWidget_itemClicked(QTreeWidgetItem *item){
@@ -103,30 +105,16 @@ void GenInvent::on_treeWidget_itemClicked(QTreeWidgetItem *item){
                 QListWidgetItem *ip = new QListWidgetItem(ui->listWidget);
                 ip->setText(host.getIp());
                 ui->listWidget->addItem(ip);
-                ip->setFlags(ip->flags() | Qt::ItemIsEditable);
 
                 ui->listWidget->addItem("Логин хоста");
                 QListWidgetItem *login = new QListWidgetItem(ui->listWidget);
                 login->setText(host.getLogin());
                 ui->listWidget->addItem(login);
-                login->setFlags(login->flags() | Qt::ItemIsEditable);
 
                 ui->listWidget->addItem("Пароль хоста");
                 QListWidgetItem *pass = new QListWidgetItem(ui->listWidget);
                 pass->setText(host.getPass());
                 ui->listWidget->addItem(pass);
-                pass->setFlags(pass->flags() | Qt::ItemIsEditable);
-
-                /*QMapIterator<QString, QString> vars(inventfile.getStructFile().value(item->parent()->text(0)).value(i).getVars());
-                while(vars.hasNext()){
-                    vars.next();
-
-                    ui->listWidget->addItem(vars.key());
-                    QListWidgetItem *var = new QListWidgetItem(ui->listWidget);
-                    var->setText(vars.value());
-                    ui->listWidget->addItem(var);
-                    var->setFlags(var->flags() | Qt::ItemIsEditable);
-                }*/
             }
             i++;
         }
@@ -157,85 +145,6 @@ void GenInvent::on_treeWidget_itemClicked(QTreeWidgetItem *item){
     }
 }
 
-void GenInvent::on_treeWidget_itemChanged(QTreeWidgetItem *item){
-    QMapIterator <Group, QVector<Host>> group(inventfile.getStructFile());
-    if (item->parent() != NULL){
-        while (group.hasNext()){
-            group.next();
-            int i = 0;
-            for (const Host& host : group.value()){
-                if (host.getName() == old_value){
-                    inventfile.getStructFile()[group.key()][i].setName(item->text(0));
-                }
-                i++;
-            }
-        }
-
-        for (int i = 0; i < ui->treeWidget->topLevelItemCount(); i++){
-            for(int j = 0; j < ui->treeWidget->topLevelItem(i)->childCount(); j++){
-                if (ui->treeWidget->topLevelItem(i)->child(j)->text(0) == old_value){
-                    ui->treeWidget->topLevelItem(i)->child(j)->setText(0, item->text(0));
-                }
-            }
-        }
-    }
-    else {
-        while (group.hasNext()){
-            group.next();
-
-            if (group.key().getName() == old_value){
-                QVector<Host>hosts = inventfile.getStructFile()[group.key()];
-                inventfile.getStructFile().remove(group.key());
-                inventfile.getStructFile().insert(item->text(0), hosts);
-            }
-        }
-    }
-}
-
-void GenInvent::on_listWidget_itemDoubleClicked(QListWidgetItem *item){
-    ui->listWidget->editItem(item);
-}
-
-void GenInvent::on_listWidget_itemSelectionChanged(){
-    QMapIterator <Group, QVector<Host>> group(inventfile.getStructFile());
-    if (ui->treeWidget->selectedItems().at(0)->parent() != NULL){
-        while(group.hasNext()){
-            group.next();
-
-            for (int i = 0; i < inventfile.getStructFile()[group.key()].length(); i++){
-                if (inventfile.getStructFile()[group.key()][i].getName() == ui->listWidget->item(1)->text()){
-                    inventfile.getStructFile()[group.key()][i].setIp(ui->listWidget->item(3)->text());
-                    inventfile.getStructFile()[group.key()][i].setLogin(ui->listWidget->item(5)->text());
-                    inventfile.getStructFile()[group.key()][i].setPass(ui->listWidget->item(7)->text());
-
-                    QMap<QString, QString>var;
-                    for (int i = 9; i < ui->listWidget->count(); i=+2){
-                        var.insert(ui->listWidget->item(i-1)->text(), ui->listWidget->item(i)->text());
-                    }
-                    //inventfile.getStructFile()[group.key()][i].setVars(var);
-                }
-            }
-        }
-    }
-    else{
-        while(group.hasNext()){
-            group.next();
-
-            if (group.key().getName() == ui->listWidget->item(1)->text()){
-                QMap<QString, QString>var;
-                for (int i = 3; i <= ui->listWidget->count(); i=+2){
-                    var.insert(ui->listWidget->item(i-1)->text(), ui->listWidget->item(i)->text());
-                }
-
-                Group gr(group.key().getName());
-                gr.setVars(var);
-                inventfile.getStructFile().insert(gr, group.value());
-                inventfile.getStructFile().remove(group.key());
-            }
-        }
-    }
-}
-
 void GenInvent::on_treeWidget_customContextMenuRequested(const QPoint &pos){
     QMenu menu(this);
     menu.addAction(ui->action_add_group);
@@ -247,6 +156,9 @@ void GenInvent::on_treeWidget_customContextMenuRequested(const QPoint &pos){
     if (ui->treeWidget->selectedItems().count() > 0){
         menu.addAction(ui->action_del);
         ui->action_del->setData(QVariant(pos));
+
+        menu.addAction(ui->action_edit);
+        ui->action_edit->setData(QVariant(pos));
     }
 
     menu.exec(ui->treeWidget->mapToGlobal(pos));

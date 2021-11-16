@@ -133,6 +133,11 @@
     <string>Удалить</string>
    </property>
   </action>
+  <action name="action_edit">
+   <property name="text">
+    <string>Редактирование</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

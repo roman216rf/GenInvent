@@ -23,6 +23,7 @@ public:
     ~AddGroup();
 
     void setPropList(InventFile& invfile);
+    void setPropList(InventFile& invfile, const QString& groupname);
 
 private slots:
     void addVar();
@@ -33,9 +34,12 @@ private slots:
 private:
     QVector<QString> getUsingVars()const;
     void delUsingVarFromCmb(const QString& varname);
+    QVector<QString> getVarList(const QMap<Group, QVector<Host>>& structFile);
+    void createOldVars(const QMap<QString, QString>& vars);
     Ui::AddGroup *ui;
     QVector<QString> varList;
     InventFile* inventFile = new InventFile();
+    Group editGroup = Group("");
 };
 
 #endif // ADDGROUP_H

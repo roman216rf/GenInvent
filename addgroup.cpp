@@ -95,9 +95,9 @@ void AddGroup::delUsingVarFromCmb(const QString& varname){
     }
 }
 
-void AddGroup::setPropList(InventFile& invfile){
+QVector<QString> AddGroup::getVarList(const QMap<Group, QVector<Host> > &structFile){
     QVector<QString>varList;
-    QMapIterator <Group, QVector<Host>> group(invfile.getStructFile());
+    QMapIterator <Group, QVector<Host>> group(structFile);
     while(group.hasNext()){
         group.next();
 
@@ -109,43 +109,95 @@ void AddGroup::setPropList(InventFile& invfile){
                 varList.append(vars.key());
         }
     }
-    inventFile = &invfile;
+    return varList;
+}
 
+void AddGroup::createOldVars(const QMap<QString, QString> &vars){
+    QMapIterator <QString, QString> var(vars);
+    for (int i = 0; i < vars.count() && var.hasNext(); i++){
+        var.next();
+
+        addVar();
+        QComboBox* varname = ui->listWidget->itemWidget(ui->listWidget->item(i+1))->findChild<QComboBox*>();
+        QLineEdit* varvalue = ui->listWidget->itemWidget(ui->listWidget->item(i+1))->findChild<QLineEdit*>();
+        varname->setCurrentIndex(varname->findText(var.key()));
+        varvalue->setText(var.value());
+    }
+}
+
+void AddGroup::setPropList(InventFile& invfile){
+    varList = getVarList(invfile.getStructFile());
+    inventFile = &invfile;
+}
+
+void AddGroup::setPropList(InventFile &invfile, const QString &groupname){
+    varList = getVarList(invfile.getStructFile());
+    inventFile = &invfile;
+    editGroup = invfile.getStructFile().find(Group(groupname)).key();
+    ui->new_groupname->setText(groupname);
+    createOldVars(editGroup.getVars());
 }
 
 void AddGroup::click_save(){
     if (!ui->new_groupname->text().isEmpty()){
-        Group group(ui->new_groupname->text());
-        QMap<QString, QString> vars;
-        bool ok_vars = true;
-        for (int i = 1; i<ui->listWidget->count(); i++){
-            QComboBox* varname = ui->listWidget->itemWidget(ui->listWidget->item(i))->findChild<QComboBox*>();
-            QLineEdit* varvalue = ui->listWidget->itemWidget(ui->listWidget->item(i))->findChild<QLineEdit*>();
+            if (!inventFile->getStructFile().contains(Group(ui->new_groupname->text()))){
+            Group group(ui->new_groupname->text());
+            QMap<QString, QString> vars;
+            bool ok_vars = true;
+            for (int i = 1; i<ui->listWidget->count(); i++){
+                QComboBox* varname = ui->listWidget->itemWidget(ui->listWidget->item(i))->findChild<QComboBox*>();
+                QLineEdit* varvalue = ui->listWidget->itemWidget(ui->listWidget->item(i))->findChild<QLineEdit*>();
 
-            if(!varname->currentText().isEmpty() && !varvalue->text().isEmpty()){
-                if (!vars.contains(varname->currentText())){
-                    vars.insert(varname->currentText(), varvalue->text());
+                if(!varname->currentText().isEmpty() && !varvalue->text().isEmpty()){
+                    if (!vars.contains(varname->currentText())){
+                        vars.insert(varname->currentText(), varvalue->text());
+                    }
+                    else{
+                        QMessageBox msg;
+                        msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+                        msg.setText("Уже существует переменная " + varname->currentText() + " со значением " + vars.value(varname->currentText()) + ". Вы хотите заменить значение на " + varvalue->text() + "?");
+                        int ret = msg.exec();
+                        if (ret == QMessageBox::Yes)
+                            vars.insert(varname->currentText(), varvalue->text());
+                    }
                 }
                 else{
                     QMessageBox msg;
-                    msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-                    msg.setText("Уже существует переменная " + varname->currentText() + " со значением " + vars.value(varname->currentText()) + ". Вы хотите заменить значение на " + varvalue->text() + "?");
-                    int ret = msg.exec();
-                    if (ret == QMessageBox::Yes)
-                        vars.insert(varname->currentText(), varvalue->text());
+                    msg.setText("Имя и/или значение переменной не могут быть пустыми!");
+                    msg.exec();
+                    ok_vars = false;
                 }
             }
-            else{
-                QMessageBox msg;
-                msg.setText("Имя и/или значение переменной не могут быть пустыми!");
-                msg.exec();
-                ok_vars = false;
+            if (ok_vars){
+                if (!editGroup.getName().isEmpty()){
+                    QMessageBox msg;
+                    msg.setWindowTitle("Изменение группы");
+                    msg.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+                    msg.setText("Вы уверены, что хотите внести изменения в группу " + editGroup.getName() + "?");
+                    int res = msg.exec();
+                    if (res == QMessageBox::Yes){
+                        QVector<Host> hosts = inventFile->getStructFile().find(editGroup).value();
+                        inventFile->delGroup(editGroup.getName());
+                        group.setVars(vars);
+                        inventFile->addOneGroup(group);
+                        inventFile->addMoreHosts(hosts, group.getName());
+                        this->close();
+                    }
+                    else{
+                        this->close();
+                    }
+                }
+                else{
+                    group.setVars(vars);
+                    inventFile->addOneGroup(group);
+                    this->close();
+                }
             }
         }
-        if (ok_vars){
-            group.setVars(vars);
-            inventFile->addOneGroup(group);
-            this->close();
+        else{
+            QMessageBox msg;
+            msg.setText("Группа с таким именем уже существует!");
+            msg.exec();
         }
     }
     else{
