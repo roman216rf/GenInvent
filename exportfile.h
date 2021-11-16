@@ -1,12 +1,17 @@
 #ifndef EXPORTFILE_H
 #define EXPORTFILE_H
-#include <QByteArray>
-#include <QFileDialog>
+#include <inventfile.h>
+#include <QMessageBox>
+#include <QFile>
 
 class ExportFile
 {
 public:
-    static void saveFile(QByteArray text);
+    ExportFile(const InventFile& invent);
+    void saveFile(const QString& path);
+
+private:
+    InventFile inventfile;
 };
 
 #endif // EXPORTFILE_H

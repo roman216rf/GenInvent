@@ -7,6 +7,7 @@ class InventFile{
 public:
     InventFile();
     InventFile(QMap<Group, QVector<Host>> structFile);
+
     void addOneGroup(Group& group);
     void addListGroups(QVector<Group>& list_groups);
 

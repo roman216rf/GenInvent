@@ -13,6 +13,7 @@ GenInvent::GenInvent(QWidget *parent)
     connect(ui->action_add_host, SIGNAL(triggered()), this, SLOT(addHost()));
     connect(ui->action_del, SIGNAL(triggered()), this, SLOT(del()));
     connect(ui->action_edit, SIGNAL(triggered()), this, SLOT(edit()));
+    connect(ui->action_Export, SIGNAL(triggered()), this, SLOT(exportFile()));
 }
 
 GenInvent::~GenInvent(){
@@ -94,6 +95,12 @@ void GenInvent::edit(){
         w.exec();
         drawStruct(inventfile);
     }
+}
+
+void GenInvent::exportFile(){
+    ExportFile exp(inventfile);
+    QFileDialog fd;
+    exp.saveFile(fd.getSaveFileName(0, "Выберите место для сохранения файла", "", "*"));
 }
 
 void GenInvent::on_treeWidget_itemClicked(QTreeWidgetItem *item){

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QTreeWidget>
+#include <exportFile.h>
 #include "ui_geninvent.h"
 #include <QFileDialog>
 #include <QListWidget>
@@ -29,6 +30,7 @@ private slots:
     void addHost();
     void del();
     void edit();
+    void exportFile();
 
     void on_treeWidget_itemClicked(QTreeWidgetItem *item);
     void on_treeWidget_customContextMenuRequested(const QPoint &pos);
