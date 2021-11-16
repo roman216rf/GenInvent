@@ -82,10 +82,18 @@ void GenInvent::del(){
 }
 
 void GenInvent::edit(){
-    AddGroup w(this);
-    w.setPropList(inventfile, ui->treeWidget->selectedItems().at(0)->text(0));
-    w.exec();
-    drawStruct(inventfile);
+    if (ui->treeWidget->selectedItems().at(0)->parent() == NULL){
+        AddGroup w(this);
+        w.setPropList(inventfile, ui->treeWidget->selectedItems().at(0)->text(0));
+        w.exec();
+        drawStruct(inventfile);
+    }
+    else{
+        AddHost w(this);
+        w.setPropList(inventfile, ui->treeWidget->selectedItems().at(0)->text(0), ui->treeWidget->selectedItems().at(0)->parent()->text(0));
+        w.exec();
+        drawStruct(inventfile);
+    }
 }
 
 void GenInvent::on_treeWidget_itemClicked(QTreeWidgetItem *item){

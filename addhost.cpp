@@ -15,13 +15,30 @@ AddHost::~AddHost(){
 }
 
 void AddHost::setPropList(InventFile &invfile){
-    QMapIterator <Group, QVector<Host>> group(invfile.getStructFile());
-    while(group.hasNext()){
-        group.next();
-        groups.append(group.key().getName());
-    }
+    groups = getGroupsNames(invfile.getStructFile());
     inventFile = &invfile;
     drawListGroup();
+}
+
+void AddHost::setPropList(InventFile &invfile, const QString &hostname, const QString& groupname){
+    groups = getGroupsNames(invfile.getStructFile());
+    inventFile = &invfile;
+    drawListGroup();
+    editHost = inventFile->getStructFile().find(Group(groupname)).value().at(inventFile->getStructFile().find(Group(groupname)).value().indexOf(Host(hostname, "")));
+    ui->hostname->setText(editHost.getName());
+    ui->ip1->setText(editHost.getIp().section('.', 0,0));
+    ui->ip2->setText(editHost.getIp().section('.', 1,1));
+    ui->ip3->setText(editHost.getIp().section('.', 2,2));
+    ui->ip4->setText(editHost.getIp().section('.', 3,3));
+    ui->login->setText(editHost.getLogin());
+    ui->pass->setText(editHost.getPass());
+    QMapIterator <Group, QVector<Host>> group(inventFile->getStructFile());
+    while (group.hasNext()) {
+        group.next();
+        if (group.value().contains(editHost)){
+            ui->listWidget->findItems(group.key().getName(), Qt::MatchExactly).at(0)->setSelected(true);
+        }
+    }
 }
 
 void AddHost::click_save(){
@@ -33,13 +50,50 @@ void AddHost::click_save(){
                     host.setLogin(ui->login->text());
                     host.setPass(ui->pass->text());
 
-                    QVector<QString>selectedGroups;
-                    for (QListWidgetItem* item : ui->listWidget->selectedItems()){
-                        selectedGroups.append(item->text());
+                    int count = 0;
+                    QMapIterator <Group, QVector<Host>> group(inventFile->getStructFile());
+                    while (group.hasNext()) {
+                        group.next();
+                        if (group.value().contains(host))
+                            count++;
                     }
+                    if (count == 0 || editHost.getName() == host.getName()){
+                        QVector<QString>selectedGroups;
+                        if (ui->listWidget->selectedItems().count() > 0){
+                            for (QListWidgetItem* item : ui->listWidget->selectedItems()){
+                                selectedGroups.append(item->text());
+                            }
 
-                    inventFile->addOneHost(host, selectedGroups);
-                    this->close();
+                            if (editHost.getName() == ""){
+                                inventFile->addOneHost(host, selectedGroups);
+                                this->close();
+                            }
+                            else{
+                                QMessageBox msg;
+                                msg.setText("Вы уверены, что хотите внести изменения в хост " + editHost.getName() + "?");
+                                msg.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+                                int res = msg.exec();
+                                if (res == QMessageBox::Yes){
+                                    inventFile->delHost(editHost.getName());
+                                    inventFile->addOneHost(host, selectedGroups);
+                                    this->close();
+                                }
+                                else{
+                                    this->close();
+                                }
+                            }
+                        }
+                        else {
+                            QMessageBox msg;
+                            msg.setText("Не выбрано ни одной группы.");
+                            msg.exec();
+                        }
+                    }
+                    else{
+                        QMessageBox msg;
+                        msg.setText("Хост с таким именем и/или IP адресом уже существует.");
+                        msg.exec();
+                    }
                 }
                 else{
                     QMessageBox msg;
@@ -70,6 +124,16 @@ void AddHost::drawListGroup(){
     for(QString group: groups){
        ui->listWidget->addItem(group);
     }
+}
+
+QVector<QString> AddHost::getGroupsNames(const QMap<Group, QVector<Host> > &structFile){
+    QVector<QString> groupList;
+    QMapIterator <Group, QVector<Host>> group(structFile);
+    while(group.hasNext()){
+        group.next();
+        groupList.append(group.key().getName());
+    }
+    return groupList;
 }
 
 void AddHost::on_ip_textChanged(const QString &arg1){

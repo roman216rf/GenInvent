@@ -19,6 +19,7 @@ public:
     ~AddHost();
 
     void setPropList(InventFile& invfile);
+    void setPropList(InventFile& invfile, const QString& hostname, const QString& groupname);
 
 private slots:
     void on_ip_textChanged(const QString &arg1);
@@ -31,8 +32,10 @@ private slots:
 private:
     Ui::AddHost *ui;
     void drawListGroup();
+    QVector<QString>getGroupsNames(const QMap<Group, QVector<Host>>& structFile);
     QVector<QString>groups;
     InventFile* inventFile = new InventFile();
+    Host editHost = Host("", "");
 };
 
 #endif // ADDHOST_H

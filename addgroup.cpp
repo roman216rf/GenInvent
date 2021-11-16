@@ -96,7 +96,7 @@ void AddGroup::delUsingVarFromCmb(const QString& varname){
 }
 
 QVector<QString> AddGroup::getVarList(const QMap<Group, QVector<Host> > &structFile){
-    QVector<QString>varList;
+    QVector<QString>varslist;
     QMapIterator <Group, QVector<Host>> group(structFile);
     while(group.hasNext()){
         group.next();
@@ -105,11 +105,11 @@ QVector<QString> AddGroup::getVarList(const QMap<Group, QVector<Host> > &structF
         while (vars.hasNext()) {
             vars.next();
 
-            if(!varList.contains(vars.key()))
-                varList.append(vars.key());
+            if(!varslist.contains(vars.key()))
+                varslist.append(vars.key());
         }
     }
-    return varList;
+    return varslist;
 }
 
 void AddGroup::createOldVars(const QMap<QString, QString> &vars){
@@ -140,7 +140,7 @@ void AddGroup::setPropList(InventFile &invfile, const QString &groupname){
 
 void AddGroup::click_save(){
     if (!ui->new_groupname->text().isEmpty()){
-            if (!inventFile->getStructFile().contains(Group(ui->new_groupname->text()))){
+        if (!inventFile->getStructFile().contains(Group(ui->new_groupname->text())) || editGroup.getName() == ui->new_groupname->text()){
             Group group(ui->new_groupname->text());
             QMap<QString, QString> vars;
             bool ok_vars = true;
