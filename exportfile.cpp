@@ -46,6 +46,17 @@ void ExportFile::saveFile(const QString& path){
         if (file.open(QIODevice::WriteOnly)){
             file.write(textfile.toStdString().c_str());
             file.close();
+
+            QMessageBox msg;
+            msg.setWindowTitle("Экспорт файла");
+            msg.setText("Файл успешно экспортирован!");
+            msg.exec();
+        }
+        else{
+            QMessageBox msg;
+            msg.setWindowTitle("Экспорт файла");
+            msg.setText("При экспорте файла возникла ошибка!");
+            msg.exec();
         }
     }
 }

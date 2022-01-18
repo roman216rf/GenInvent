@@ -49,7 +49,7 @@ InventFile ImportFile::importZabbixFile(const QString &file_path){
                                 }
                             }
                             else if (line.startsWith("      interfaces:")){
-                                while(!line.startsWith("      inventory_mode:")){
+                                while(!line.startsWith("          interface_ref: if1")){
                                     if (line.startsWith("          ip:")){
                                         line.remove(0, 14);
                                         line.chop(1);
